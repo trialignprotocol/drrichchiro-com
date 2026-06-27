@@ -1,3 +1,3 @@
-# drrichchiro.com — redirects to https://drdavidrich.com/chiropractic/
+# drrichchiro.com - redirects to https://drdavidrich.com/chiropractic/
 User-agent: *
 Allow: /
