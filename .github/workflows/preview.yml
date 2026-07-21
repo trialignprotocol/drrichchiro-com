@@ -49,4 +49,17 @@ jobs:
             exit 0
           fi
           git commit -m "Preview drrichchiro @ ${{ github.sha }}"
-          git push
+          # Three sites share this one preview repo, so pushes can collide.
+          # Each site owns its own subfolder, so rebasing is always safe here.
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "Pushed on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected, another site got there first. Retrying ($attempt/5)."
+            sleep $(( (RANDOM % 5) + 2 ))
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "Could not push the preview after 5 attempts."
+          exit 1
