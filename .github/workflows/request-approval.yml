@@ -1,0 +1,30 @@
+name: Request go-live approval
+
+on:
+  push:
+    branches: [dev]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Open or refresh the go-live pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --base main --head dev --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" --body-file .github/go-live-message.md
+            echo "Refreshed PR #$existing"
+          else
+            gh pr create --base main --head dev \
+              --title "Website changes ready for your approval" \
+              --body-file .github/go-live-message.md
+          fi
