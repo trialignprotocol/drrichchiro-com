@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: trialignprotocol/site-previews
-          token: ${{ secrets.PREVIEW_TOKEN }}
+          ssh-key: ${{ secrets.PREVIEW_DEPLOY_KEY }}
           path: previews
 
       - name: Sync dev into the preview folder
